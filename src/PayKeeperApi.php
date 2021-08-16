@@ -1,0 +1,79 @@
+<?php
+
+namespace iAvatar777\components\PayKeeperApi;
+
+use yii\helpers\Json;
+
+/**
+ * https://paykeeper.ru/
+ * call-back - https://docs.paykeeper.ru/metody-integratsii/priyom-post-opoveshhenij/
+ * test card - MasterCard	5100 4772 8001 3333	03 / 23	IVAN IVANOV	333
+ */
+class PayKeeperApi extends \yii\base\BaseObject
+{
+    public $url;
+    public $user;
+    public $password;
+    public $secret;
+
+    public static function createObject($params)
+    {
+        return new self($params);
+    }
+
+    /**
+     * @param array $params
+     *[
+    "pay_amount"   => 42.50,
+    "clientid"     => "Иванов Иван Иванович",
+    "orderid"      => "Заказ № 11",
+    "client_email" => "test@example.com",
+    "service_name" => "Услуга",
+    "client_phone" => "8 (910) 123-45-67"
+    ]
+     * @return array
+     */
+    public function createPayment($params)
+    {
+        $data = $this->callToken('POST', '/change/invoice/preview/', $params);
+
+        return [
+            'invoice_id'  => $data['invoice_id'],
+            'invoice_url' => $data['invoice_url'],
+        ];
+    }
+
+    public function callToken($type, $path, $params)
+    {
+        $data = $this->call('GET', '/info/settings/token/');
+        $token = $data['token'];
+
+        $params['token'] = $token;
+        $data = $this->call($type, $path, $params);
+
+        return $data;
+    }
+
+    public function call($type, $path, $params = [])
+    {
+        $client = new \yii\httpclient\Client(['baseUrl' => $this->url]);
+        $user = $this->user;
+        $password = $this->password;
+
+        $base64 = base64_encode("$user:$password");
+
+        if ($type == 'GET') {
+            $request = $client->get($path, $params);
+        } else {
+            $request = $client->post($path, $params);
+        }
+        $request->headers
+            ->add('Content-Type', 'application/x-www-form-urlencoded')
+            ->add('Authorization', 'Basic ' . $base64);
+        $response = $request->send();
+
+        $data = Json::decode($response->content);
+
+        return $data;
+    }
+}
