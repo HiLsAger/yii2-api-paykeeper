@@ -1,6 +1,6 @@
 {
   "name": "i-avatar777/yii2-api-paykeeper",
-  "version":"0.0.1",
+  "version":"0.0.2",
   "description": "Yii2 модуль для связи с API PayKeeper",
   "keywords": ["paykeeper"],
   "type": "project",

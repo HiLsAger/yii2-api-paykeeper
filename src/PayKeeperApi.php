@@ -16,6 +16,12 @@ class PayKeeperApi extends \yii\base\BaseObject
     public $password;
     public $secret;
 
+    /** @var string название ключа в кеше */
+    public $key = '\iAvatar777\components\PayKeeperApi\PayKeeperApi::$key';
+
+    /** @var int Время хранения токена в сек */
+    public $keySaveTime;
+
     public static function createObject($params)
     {
         return new self($params);
@@ -24,13 +30,13 @@ class PayKeeperApi extends \yii\base\BaseObject
     /**
      * @param array $params
      *[
-    "pay_amount"   => 42.50,
-    "clientid"     => "Иванов Иван Иванович",
-    "orderid"      => "Заказ № 11",
-    "client_email" => "test@example.com",
-    "service_name" => "Услуга",
-    "client_phone" => "8 (910) 123-45-67"
-    ]
+     * "pay_amount"   => 42.50,
+     * "clientid"     => "Иванов Иван Иванович",
+     * "orderid"      => "Заказ № 11",
+     * "client_email" => "test@example.com",
+     * "service_name" => "Услуга",
+     * "client_phone" => "8 (910) 123-45-67"
+     * ]
      * @return array
      */
     public function createPayment($params)
@@ -45,13 +51,45 @@ class PayKeeperApi extends \yii\base\BaseObject
 
     public function callToken($type, $path, $params)
     {
-        $data = $this->call('GET', '/info/settings/token/');
-        $token = $data['token'];
+        $token = $this->getToken();
 
         $params['token'] = $token;
         $data = $this->call($type, $path, $params);
 
         return $data;
+    }
+
+    /**
+     * Возвращает токен из кеша, если там нет то вызывает фугкцию получения токена
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        $key = [
+            $this->key,
+            $this->url,
+            $this->user,
+        ];
+        $token = \Yii::$app->cache->get($key);
+        if ($token === false) {
+            $token = $this->_getToken();
+            \Yii::$app->cache->set($key, $this->keySaveTime);
+        }
+
+        return $token;
+    }
+
+    /**
+     * получает токен через API
+     *
+     * @return string
+     */
+    public function _getToken()
+    {
+        $data = $this->call('GET', '/info/settings/token/');
+
+        return $data['token'];
     }
 
     public function call($type, $path, $params = [])
