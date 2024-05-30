@@ -1,7 +1,9 @@
 <?php
 
-namespace iAvatar777\components\PayKeeperApi;
+namespace HiLsAger\components\PayKeeperApi;
 
+use yii\base\InvalidConfigException;
+use yii\base\Module;
 use yii\helpers\Json;
 
 /**
@@ -11,13 +13,14 @@ use yii\helpers\Json;
  */
 class PayKeeperApi extends \yii\base\BaseObject
 {
+    public $module;
     public $url;
     public $user;
     public $password;
     public $secret;
 
     /** @var string название ключа в кеше */
-    public $key = '\iAvatar777\components\PayKeeperApi\PayKeeperApi::$key';
+    public $key = '\HiLsAger\components\PayKeeperApi\PayKeeperApi::$key';
 
     /** @var int Время хранения токена в сек */
     public $keySaveTime;
@@ -26,6 +29,22 @@ class PayKeeperApi extends \yii\base\BaseObject
     {
         return new self($params);
     }
+
+    public function init()
+    {
+        parent::init();
+        $this->module = Module::getInstance();
+        if (
+            empty($this->login)
+            || empty($this->url)
+            || empty($this->user)
+            || empty($this->password)
+            || empty($this->secret
+            )) {
+            throw new InvalidConfigException('Модуль настроен не правильно пожалуйсто прочтите документацию');
+        }
+    }
+
 
     /**
      * @param array $params
