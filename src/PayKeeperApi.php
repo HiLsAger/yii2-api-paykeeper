@@ -1,15 +1,16 @@
 <?php
 
-namespace iAvatar777\components\PayKeeperApi;
+namespace HiLsAger\components\PayKeeperApi;
 
 use yii\helpers\Json;
+use yii\base\Component;
 
 /**
  * https://paykeeper.ru/
  * call-back - https://docs.paykeeper.ru/metody-integratsii/priyom-post-opoveshhenij/
  * test card - MasterCard	5100 4772 8001 3333	03 / 23	IVAN IVANOV	333
  */
-class PayKeeperApi extends \yii\base\BaseObject
+class PayKeeperApi extends Component
 {
     public $url;
     public $user;
@@ -17,7 +18,7 @@ class PayKeeperApi extends \yii\base\BaseObject
     public $secret;
 
     /** @var string название ключа в кеше */
-    public $key = '\iAvatar777\components\PayKeeperApi\PayKeeperApi::$key';
+    public $key = '\HiLsAger\components\PayKeeperApi\PayKeeperApi::$key';
 
     /** @var int Время хранения токена в сек */
     public $keySaveTime;
