@@ -2,16 +2,18 @@
 
 namespace HiLsAger\components\PayKeeperApi;
 
+use yii\base\InvalidConfigException;
+use yii\base\Module;
 use yii\helpers\Json;
-use yii\base\Component;
 
 /**
  * https://paykeeper.ru/
  * call-back - https://docs.paykeeper.ru/metody-integratsii/priyom-post-opoveshhenij/
  * test card - MasterCard	5100 4772 8001 3333	03 / 23	IVAN IVANOV	333
  */
-class PayKeeperApi extends Component
+class PayKeeperApi extends \yii\base\BaseObject
 {
+    public $module;
     public $url;
     public $user;
     public $password;
@@ -27,6 +29,22 @@ class PayKeeperApi extends Component
     {
         return new self($params);
     }
+
+    public function init()
+    {
+        parent::init();
+        $this->module = Module::getInstance();
+        if (
+            empty($this->login)
+            || empty($this->url)
+            || empty($this->user)
+            || empty($this->password)
+            || empty($this->secret
+            )) {
+            throw new InvalidConfigException('Модуль настроен не правильно пожалуйсто прочтите документацию');
+        }
+    }
+
 
     /**
      * @param array $params
