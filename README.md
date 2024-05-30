@@ -3,7 +3,7 @@ Yii2 модуль для связи с API PayKeeper
 
 #Практика использования
 ```php
-$provider = new \iAvatar777\components\PayKeeperApi\PayKeeperApi([
+$provider = new \HiLsAger\components\PayKeeperApi\PayKeeperApi([
     'url'       => '',
     'user'      => '',
     'password'  => '',
