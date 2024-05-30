@@ -1,5 +1,5 @@
 {
-  "name": "i-avatar777/yii2-api-paykeeper",
+  "name": "hilsager/yii2-api-paykeeper",
   "version":"0.0.2",
   "description": "Yii2 модуль для связи с API PayKeeper",
   "keywords": ["paykeeper"],
@@ -20,7 +20,7 @@
   },
   "autoload": {
     "psr-4": {
-      "iAvatar777\\components\\PayKeeperApi\\": "src"
+      "hilsager\\components\\PayKeeperApi\\": "src"
     }
   },
   "repositories": [
